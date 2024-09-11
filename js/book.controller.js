@@ -14,12 +14,17 @@ function renderBooks() {
       <td>${book.title}</td>
       <td>${book.price}</td>
       <td>
-        <button onclick="onReadBook(${book.id})">Read</button>
-        <button onclick="onUpdateBook(${book.id})">Update</button>
-        <button onclick="onDeleteBook(${book.id})">Delete</button>
+        <button onclick="onReadBook('${book.id}')">Read</button>
+        <button onclick="onUpdateBook('${book.id}')">Update</button>
+        <button onclick="onRemoveBook('${book.id}')">Delete</button>
       </td>
     </tr>`
   )
 
   elTable.innerHTML = strHtmls.join('')
+}
+
+function onRemoveBook(bookId) {
+  removeBook(bookId)
+  renderBooks()
 }
