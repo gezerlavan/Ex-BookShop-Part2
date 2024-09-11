@@ -28,3 +28,9 @@ function onRemoveBook(bookId) {
   removeBook(bookId)
   renderBooks()
 }
+
+function onUpdateBook(bookId) {
+  const newPrice = +prompt('Enter the new price')
+  updatePrice(bookId, newPrice)
+  renderBooks()
+}
