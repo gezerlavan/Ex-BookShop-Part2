@@ -8,7 +8,9 @@
   </head>
   <body onload="onInit()">
     <h1>BookShop</h1>
+
     <button onclick="onAddBook()">Add book</button>
+
     <table>
       <thead>
         <tr>
@@ -19,6 +21,11 @@
       </thead>
       <tbody></tbody>
     </table>
+
+    <dialog>
+      <div class="dialog-container"></div>
+    </dialog>
+
     <script src="js/util.service.js"></script>
     <script src="js/book.service.js"></script>
     <script src="js/book.controller.js"></script>
