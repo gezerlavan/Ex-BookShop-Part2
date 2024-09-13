@@ -7,20 +7,28 @@
     <title>Document</title>
   </head>
   <body onload="onInit()">
-    <h1>BookShop</h1>
+    <header>
+      <h1>BookShop</h1>
+    </header>
 
-    <button onclick="onAddBook()">Add book</button>
+    <main>
+      <section class="actions">
+        <button onclick="onAddBook()">Add book</button>
+      </section>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </main>
+    
+    <footer>Coffee Rights ©</footer>
 
     <dialog>
       <div class="dialog-container"></div>

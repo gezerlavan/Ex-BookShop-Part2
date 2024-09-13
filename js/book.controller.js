@@ -22,7 +22,7 @@ function renderBooks() {
   )
 
   elTable.innerHTML = !books.length
-    ? '<tr><td colspan="3">No books to show</td></tr>'
+    ? '<tr><td colspan="3" class="no-books">No books to show</td></tr>'
     : strHtmls.join('')
 }
 
