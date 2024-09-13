@@ -13,6 +13,14 @@
 
     <main>
       <section class="actions">
+        <div class="filter">
+          <input
+            oninput="onFilterBy(this)"
+            type="text"
+            placeholder="Search by book title..."
+          />
+          <button onclick="onFilterBy()">Clear</button>
+        </div>
         <button onclick="onAddBook()">Add book</button>
       </section>
 
@@ -27,16 +35,16 @@
         <tbody></tbody>
       </table>
     </main>
-    
+
     <footer>Coffee Rights ©</footer>
 
     <dialog>
       <div class="dialog-container"></div>
     </dialog>
 
-    <script src="js/util.service.js"></script>
-    <script src="js/storage.service.js"></script>
-    <script src="js/book.service.js"></script>
+    <script src="js/services/util.service.js"></script>
+    <script src="js/services/storage.service.js"></script>
+    <script src="js/services/book.service.js"></script>
     <script src="js/book.controller.js"></script>
   </body>
 </html>

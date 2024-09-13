@@ -1,12 +1,14 @@
 'use strict'
 
+var gFilterBy = ''
+
 function onInit() {
   renderBooks()
 }
 
 function renderBooks() {
   const elTable = document.querySelector('tbody')
-  const books = getBooks()
+  const books = getBooks(gFilterBy)
 
   const strHtmls = books.map(
     book => `
@@ -24,6 +26,16 @@ function renderBooks() {
   elTable.innerHTML = !books.length
     ? '<tr><td colspan="3" class="no-books">No books to show</td></tr>'
     : strHtmls.join('')
+}
+
+function onFilterBy(elInput) {
+  if (!elInput) {
+    gFilterBy = ''
+    document.querySelector('input').value = ''
+  } else {
+    gFilterBy = elInput.value
+  }
+  renderBooks()
 }
 
 function onRemoveBook(bookId) {

@@ -8,8 +8,11 @@ const IMG_URL =
 var gBooks = []
 _createBooks()
 
-function getBooks() {
-  return gBooks
+function getBooks(filterBy) {
+  if (!filterBy) return gBooks
+
+  const regex = new RegExp(filterBy, 'i')
+  return gBooks.filter(book => regex.test(book.title))
 }
 
 function removeBook(bookId) {
