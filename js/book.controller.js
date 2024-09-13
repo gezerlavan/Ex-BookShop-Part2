@@ -1,6 +1,7 @@
 'use strict'
 
 var gFilterBy = ''
+var gTimeoutId
 
 function onInit() {
   renderBooks()
@@ -41,6 +42,8 @@ function onFilterBy(elInput) {
 function onRemoveBook(bookId) {
   removeBook(bookId)
   renderBooks()
+
+  showSuccessMsg(`Book removed successfully ${bookId}`)
 }
 
 function onUpdateBook(bookId) {
@@ -48,6 +51,8 @@ function onUpdateBook(bookId) {
   if (!newPrice) return
   updatePrice(bookId, newPrice)
   renderBooks()
+
+  showSuccessMsg(`Book updated successfully ${bookId}`)
 }
 
 function onAddBook() {
@@ -56,11 +61,25 @@ function onAddBook() {
   if (!title || !price) return
   addBook(title, price)
   renderBooks()
+
+  showSuccessMsg(`Book added successfully`)
 }
 
 function onReadBook(ev, bookId) {
   const book = getBookById(bookId)
   renderModal(ev, book)
+}
+
+function showSuccessMsg(msg) {
+  if (gTimeoutId) clearTimeout(gTimeoutId)
+  const elUserMsg = document.querySelector('.user-msg')
+  elUserMsg.innerText = msg
+  elUserMsg.hidden = false
+
+  gTimeoutId = setTimeout(() => {
+    elUserMsg.innerText = ''
+    elUserMsg.hidden = true
+  }, 2000)
 }
 
 function renderModal(ev, book) {

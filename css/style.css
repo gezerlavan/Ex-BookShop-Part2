@@ -82,3 +82,13 @@ dialog {
 .no-books {
   text-align: center;
 }
+
+.user-msg {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+
+  padding: 0.5em;
+  margin: 1em;
+  background-color: gray;
+}
