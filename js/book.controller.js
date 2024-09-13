@@ -5,6 +5,7 @@ var gTimeoutId
 
 function onInit() {
   renderBooks()
+  renderStats()
 }
 
 function renderBooks() {
@@ -29,6 +30,17 @@ function renderBooks() {
     : strHtmls.join('')
 }
 
+function renderStats() {
+  const elExpensive = document.querySelector('.expensive')
+  const elAverage = document.querySelector('.average')
+  const elCheap = document.querySelector('.cheap')
+  const stats = getStats()
+
+  elExpensive.innerText = stats.expensive
+  elAverage.innerText = stats.average
+  elCheap.innerText = stats.cheap
+}
+
 function onFilterBy(elInput) {
   if (!elInput) {
     gFilterBy = ''
@@ -42,6 +54,7 @@ function onFilterBy(elInput) {
 function onRemoveBook(bookId) {
   removeBook(bookId)
   renderBooks()
+  renderStats()
 
   showSuccessMsg(`Book removed successfully ${bookId}`)
 }
@@ -51,6 +64,7 @@ function onUpdateBook(bookId) {
   if (!newPrice) return
   updatePrice(bookId, newPrice)
   renderBooks()
+  renderStats()
 
   showSuccessMsg(`Book updated successfully ${bookId}`)
 }
@@ -61,6 +75,7 @@ function onAddBook() {
   if (!title || !price) return
   addBook(title, price)
   renderBooks()
+  renderStats()
 
   showSuccessMsg(`Book added successfully`)
 }

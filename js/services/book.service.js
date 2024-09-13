@@ -41,6 +41,18 @@ function getBookById(bookId) {
   return book
 }
 
+function getStats() {
+  return gBooks.reduce(
+    (acc, book) => {
+      if (book.price < 80) acc.cheap++
+      else if (book.price <= 200) acc.average++
+      else acc.expensive++
+      return acc
+    },
+    { expensive: 0, average: 0, cheap: 0 }
+  )
+}
+
 function _createBooks() {
   gBooks = loadFromStorage(BOOKS_KEY)
 
