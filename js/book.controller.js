@@ -2,11 +2,13 @@
 
 var gFilterBy = ''
 var gIsTable
+var gSelectedBook
 var gTimeoutId
 
 function onInit() {
   gIsTable = getUserPref() === 'table'
   handleToggleDisplay(gIsTable)
+  gSelectedBook = null
   renderButton()
   renderBooks()
   renderStats()
@@ -140,6 +142,7 @@ function onAddBook() {
 
 function onReadBook(ev, bookId) {
   const book = getBookById(bookId)
+  gSelectedBook = book
   renderModal(ev, book)
 }
 
@@ -162,11 +165,16 @@ function renderModal(ev, book) {
   const elDialogContainer = document.querySelector('dialog .dialog-container')
 
   var strHtml = `
-  <h1>${book.title}</h1>
-  <p>Price: ${book.price}</p>
-  <img src="${book.imgUrl}" alt="book image">
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, qui!</p>
-  <button onclick="onCloseModal()">Close</button>
+    <h1>${book.title}</h1>
+    <p>Price: ${book.price}</p>
+    <p>Rating: 
+      <span onclick="onUpdateRating(-1)">-</span> 
+      <span class="rating">${book.rating}</span> 
+      <span onclick="onUpdateRating(1)">+</span>
+    </p>
+    <img src="${book.imgUrl}" alt="book image">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, qui!</p>
+    <button onclick="onCloseModal()">Close</button>
   `
 
   // var strHtml = `
@@ -179,8 +187,17 @@ function renderModal(ev, book) {
   window.addEventListener('click', closeOnOutsideClick)
 }
 
+function onUpdateRating(diff) {
+  const elRating = document.querySelector('.rating')
+  const newRating = gSelectedBook.rating + diff
+
+  const updatedBook = updateRating(gSelectedBook.id, newRating)
+  elRating.innerText = updatedBook.rating
+}
+
 function onCloseModal() {
   const elDialog = document.querySelector('dialog')
+  gSelectedBook = null
   elDialog.close()
 
   window.removeEventListener('click', closeOnOutsideClick)

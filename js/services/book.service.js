@@ -19,7 +19,6 @@ function getBooks(filterBy) {
 }
 
 function getUserPref() {
-  console.log(loadFromStorage(USER_PREF_KEY))
   return loadFromStorage(USER_PREF_KEY) || 'table'
 }
 
@@ -36,10 +35,20 @@ function removeBook(bookId) {
 }
 
 function updatePrice(bookId, newPrice) {
-  const bookToUpdate = gBooks.find(book => book.id === bookId)
+  const bookToUpdate = getBookById(bookId)
   bookToUpdate.price = newPrice
 
   _saveBooks()
+}
+
+function updateRating(bookId, newRating) {
+  const bookToUpdate = getBookById(bookId)
+  if (newRating >= 1 && newRating <= 5) {
+    bookToUpdate.rating = newRating
+  }
+
+  _saveBooks()
+  return bookToUpdate
 }
 
 function addBook(title, price) {
@@ -72,18 +81,19 @@ function _createBooks() {
   if (gBooks && gBooks.length) return
 
   gBooks = []
-  gBooks.push(_createBook('Book 1', 110))
-  gBooks.push(_createBook('Book 2', 120))
-  gBooks.push(_createBook('Book 3', 130))
+  gBooks.push(_createBook('Book 1', 110, 3))
+  gBooks.push(_createBook('Book 2', 120, 4))
+  gBooks.push(_createBook('Book 3', 130, 5))
 
   _saveBooks()
 }
 
-function _createBook(title = 'Demo Book', price = 100) {
+function _createBook(title = 'Demo Book', price = 100, rating = 5) {
   return {
     id: makeId(),
     title,
     price,
+    rating,
     imgUrl: IMG_URL,
   }
 }
