@@ -21,7 +21,10 @@
           />
           <button onclick="onFilterBy()">Clear</button>
         </div>
-        <button onclick="onAddBook()">Add book</button>
+        <div>
+          <button onclick="onAddBook()">Add book</button>
+          <button class="btn-display" onclick="onToggleDisplay()"></button>
+        </div>
       </section>
 
       <table>
@@ -34,6 +37,8 @@
         </thead>
         <tbody></tbody>
       </table>
+
+      <ul class="book-list"></ul>
     </main>
 
     <p class="user-msg" hidden></p>

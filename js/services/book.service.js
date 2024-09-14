@@ -1,11 +1,14 @@
 'use strict'
 
 const BOOKS_KEY = 'books'
+const USER_PREF_KEY = 'userPref'
 
 const IMG_URL =
   'https://i.pinimg.com/736x/35/a4/52/35a45204888e5df66d047bb84a6f3ab6.jpg'
 
 var gBooks = []
+var gUserPref = ''
+
 _createBooks()
 
 function getBooks(filterBy) {
@@ -13,6 +16,16 @@ function getBooks(filterBy) {
 
   const regex = new RegExp(filterBy, 'i')
   return gBooks.filter(book => regex.test(book.title))
+}
+
+function getUserPref() {
+  console.log(loadFromStorage(USER_PREF_KEY))
+  return loadFromStorage(USER_PREF_KEY) || 'table'
+}
+
+function setUserPref(isTable) {
+  gUserPref = isTable ? 'table' : 'cards'
+  _saveUserPref()
 }
 
 function removeBook(bookId) {
@@ -77,4 +90,8 @@ function _createBook(title = 'Demo Book', price = 100) {
 
 function _saveBooks() {
   saveToStorage(BOOKS_KEY, gBooks)
+}
+
+function _saveUserPref() {
+  saveToStorage(USER_PREF_KEY, gUserPref)
 }

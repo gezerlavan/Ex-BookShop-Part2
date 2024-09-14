@@ -1,16 +1,24 @@
 'use strict'
 
 var gFilterBy = ''
+var gIsTable
 var gTimeoutId
 
 function onInit() {
+  gIsTable = getUserPref() === 'table'
+  handleToggleDisplay(gIsTable)
+  renderButton()
   renderBooks()
   renderStats()
 }
 
 function renderBooks() {
-  const elTable = document.querySelector('tbody')
   const books = getBooks(gFilterBy)
+  gIsTable ? renderTable(books) : renderCards(books)
+}
+
+function renderTable(books) {
+  const elTableBody = document.querySelector('tbody')
 
   const strHtmls = books.map(
     book => `
@@ -25,9 +33,59 @@ function renderBooks() {
       </tr>`
   )
 
-  elTable.innerHTML = !books.length
+  elTableBody.innerHTML = !books.length
     ? '<tr><td colspan="3" class="no-books">No books to show</td></tr>'
     : strHtmls.join('')
+}
+
+function renderCards(books) {
+  const elCards = document.querySelector('.book-list')
+
+  const strHtmls = books.map(
+    book => `
+      <li>
+        <p>Title: ${book.title}</p>
+        <p>Price: ${book.price}</p>
+        <img src="${book.imgUrl}" alt="">
+        <div>
+          <button onclick="onReadBook(event, '${book.id}')">Read</button>
+          <button onclick="onUpdateBook('${book.id}')">Update</button>
+          <button onclick="onRemoveBook('${book.id}')">Delete</button>
+        </div>
+      </li>
+    `
+  )
+
+  elCards.innerHTML = !books.length
+    ? '<li class="no-books">No books to show</li>'
+    : strHtmls.join('')
+}
+
+function renderButton() {
+  const elDisplayBtn = document.querySelector('.btn-display')
+  elDisplayBtn.innerText = gIsTable ? 'Cards' : 'Table'
+}
+
+function onToggleDisplay() {
+  gIsTable = !gIsTable
+  setUserPref(gIsTable)
+
+  handleToggleDisplay()
+  renderButton()
+  renderBooks()
+}
+
+function handleToggleDisplay() {
+  const elTable = document.querySelector('table')
+  const elCards = document.querySelector('.book-list')
+
+  if (gIsTable) {
+    elTable.style.display = 'table'
+    elCards.style.display = 'none'
+  } else {
+    elTable.style.display = 'none'
+    elCards.style.display = 'flex'
+  }
 }
 
 function renderStats() {
