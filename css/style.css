@@ -71,7 +71,11 @@ th,
 td {
   padding: 0.5em;
   border: 1px solid;
-  text-align: left;
+}
+
+th,
+td:not(:first-child) {
+  text-align: center;
 }
 
 table tbody tr:nth-child(odd) {
@@ -84,7 +88,7 @@ ul.book-list {
   flex-wrap: wrap;
   gap: 0.5em;
 
-  padding: 0;
+  padding: 1em;
   list-style-type: none;
 }
 

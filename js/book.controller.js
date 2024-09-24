@@ -27,6 +27,7 @@ function renderTable(books) {
       <tr>
         <td>${book.title}</td>
         <td>${book.price}</td>
+        <td>${book.rating}</td>
         <td>
           <button onclick="onReadBook(event, '${book.id}')">Read</button>
           <button onclick="onUpdateBook('${book.id}')">Update</button>
@@ -48,6 +49,7 @@ function renderCards(books) {
       <li>
         <p>Title: ${book.title}</p>
         <p>Price: ${book.price}</p>
+        <p>Rating: ${book.rating}</p>
         <img src="${book.imgUrl}" alt="">
         <div>
           <button onclick="onReadBook(event, '${book.id}')">Read</button>
