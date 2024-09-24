@@ -1,7 +1,7 @@
 'use strict'
 
 var gQueryOptions = {
-  filterBy: { txt: '', minRating: 0 },
+  filterBy: { txt: '', minRating: 1 },
   sortBy: {},
   page: { idx: 0, size: 5 },
 }
@@ -14,6 +14,7 @@ function onInit() {
   handleToggleDisplay(gIsTable)
   gSelectedBook = null
   renderButton()
+  readQueryParams()
   renderBooks()
   renderStats()
 }
@@ -21,6 +22,7 @@ function onInit() {
 function renderBooks() {
   const books = getBooks(gQueryOptions)
   gIsTable ? renderTable(books) : renderCards(books)
+  setQueryParams()
 }
 
 function renderTable(books) {
@@ -197,24 +199,20 @@ function closeOnOutsideClick(ev) {
 function onSetFilterBy(elInput) {
   const { filterBy } = gQueryOptions
   if (elInput.name === 'txt') filterBy.txt = elInput.value
-  if (elInput.name === 'minRating') {
-    filterBy.minRating = +elInput.value
-    document.querySelector('.min-rate').innerText = elInput.value
-  }
+  if (elInput.name === 'minRating') filterBy.minRating = +elInput.value
 
   renderBooks()
 }
 
 function onResetFilter() {
   gQueryOptions = {
-    filterBy: { txt: '', minRating: 0 },
+    filterBy: { txt: '', minRating: 1 },
     sortBy: {},
     page: { idx: 0, size: 5 },
   }
 
   document.querySelector('input[type=text]').value = ''
-  document.querySelector('input[type=range]').value = 3
-  document.querySelector('.min-rate').innerText = 0
+  document.querySelector('input[type=range]').value = 1
 
   renderBooks()
 }
@@ -223,59 +221,62 @@ function onResetFilter() {
 
 function readQueryParams() {
   const queryParams = new URLSearchParams(window.location.search)
-  
+
   gQueryOptions.filterBy = {
-      txt: queryParams.get('vendor') || '',
-      minSpeed: +queryParams.get('minSpeed') || 0
+    txt: queryParams.get('title') || '',
+    minRating: +queryParams.get('minRating') || 1,
   }
 
-  if(queryParams.get('sortField')) {
-      const prop = queryParams.get('sortField')
-      const dir = queryParams.get('sortDir')
+  if (queryParams.get('sortField')) {
+    const prop = queryParams.get('sortField')
+    const dir = queryParams.get('sortDir')
 
-      gQueryOptions.sortBy.sortField = prop
-      gQueryOptions.sortBy.sortDir = dir
+    gQueryOptions.sortBy.sortField = prop
+    gQueryOptions.sortBy.sortDir = dir
   }
 
-  if(queryParams.get('pageIdx')) {
-      gQueryOptions.page.idx = +queryParams.get('pageIdx')
-      gQueryOptions.page.size = +queryParams.get('pageSize')
+  if (queryParams.get('pageIdx')) {
+    gQueryOptions.page.idx = +queryParams.get('pageIdx')
+    gQueryOptions.page.size = +queryParams.get('pageSize')
   }
   renderQueryParams()
 }
 
 function renderQueryParams() {
-  
-  document.querySelector('.vendor').value = gQueryOptions.filterBy.txt
-  document.querySelector('.min-speed').value = gQueryOptions.filterBy.minSpeed
-  
-  const sortField = gQueryOptions.sortBy.sortField
-  const sortDir = +gQueryOptions.sortBy.sortDir
+  document.querySelector('.title').value = gQueryOptions.filterBy.txt
+  document.querySelector('.min-rating').value = gQueryOptions.filterBy.minRating
 
-  document.querySelector('.sort-by select').value = sortField || ''
-  document.querySelector('.sort-by input').checked = (sortDir === -1) ? true : false
+  // const sortField = gQueryOptions.sortBy.sortField
+  // const sortDir = +gQueryOptions.sortBy.sortDir
+
+  // document.querySelector('.sort-by select').value = sortField || ''
+  // document.querySelector('.sort-by input').checked =
+  //   sortDir === -1 ? true : false
 }
 
 function setQueryParams() {
   const queryParams = new URLSearchParams()
 
-  queryParams.set('vendor', gQueryOptions.filterBy.txt)
-  queryParams.set('minSpeed', gQueryOptions.filterBy.minSpeed)
+  queryParams.set('title', gQueryOptions.filterBy.txt)
+  queryParams.set('minRating', gQueryOptions.filterBy.minRating)
 
-  if(gQueryOptions.sortBy.sortField) {
-      queryParams.set('sortField', gQueryOptions.sortBy.sortField)
-      queryParams.set('sortDir', gQueryOptions.sortBy.sortDir)
+  if (gQueryOptions.sortBy.sortField) {
+    queryParams.set('sortField', gQueryOptions.sortBy.sortField)
+    queryParams.set('sortDir', gQueryOptions.sortBy.sortDir)
   }
 
-  if(gQueryOptions.page) {
-      queryParams.set('pageIdx', gQueryOptions.page.idx)
-      queryParams.set('pageSize', gQueryOptions.page.size)
+  if (gQueryOptions.page) {
+    queryParams.set('pageIdx', gQueryOptions.page.idx)
+    queryParams.set('pageSize', gQueryOptions.page.size)
   }
 
-  const newUrl = 
-      window.location.protocol + "//" + 
-      window.location.host + 
-      window.location.pathname + '?' + queryParams.toString()
+  const newUrl =
+    window.location.protocol +
+    '//' +
+    window.location.host +
+    window.location.pathname +
+    '?' +
+    queryParams.toString()
 
   window.history.pushState({ path: newUrl }, '', newUrl)
 }

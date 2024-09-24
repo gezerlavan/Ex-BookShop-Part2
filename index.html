@@ -15,13 +15,15 @@
       <section class="actions">
         <div class="filter">
           <input
+            class="title"
             oninput="onSetFilterBy(this)"
             type="text"
             name="txt"
             placeholder="Search by book title..."
           />
-          <label for="rating">Min rate: <span class="min-rate">0</span></label>
+          <label for="rating">Min rate: <span class="min-rate"></span></label>
           <input
+            class="min-rating"
             id="rating"
             type="range"
             oninput="onSetFilterBy(this);this.title = this.value"
