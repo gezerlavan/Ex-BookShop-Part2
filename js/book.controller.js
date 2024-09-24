@@ -1,6 +1,10 @@
 'use strict'
 
-var gFilterBy = ''
+var gQueryOptions = {
+  filterBy: { txt: '', minRating: 0 },
+  sortBy: {},
+  page: { idx: 0, size: 5 },
+}
 var gIsTable
 var gSelectedBook
 var gTimeoutId
@@ -15,7 +19,7 @@ function onInit() {
 }
 
 function renderBooks() {
-  const books = getBooks(gFilterBy)
+  const books = getBooks(gQueryOptions)
   gIsTable ? renderTable(books) : renderCards(books)
 }
 
@@ -37,7 +41,7 @@ function renderTable(books) {
   )
 
   elTableBody.innerHTML = !books.length
-    ? '<tr><td colspan="3" class="no-books">No books to show</td></tr>'
+    ? '<tr><td colspan="4" class="no-books">No books to show</td></tr>'
     : strHtmls.join('')
 }
 
@@ -103,15 +107,7 @@ function renderStats() {
   elCheap.innerText = stats.cheap
 }
 
-function onFilterBy(elInput) {
-  if (!elInput) {
-    gFilterBy = ''
-    document.querySelector('input').value = ''
-  } else {
-    gFilterBy = elInput.value
-  }
-  renderBooks()
-}
+// CRUD
 
 function onRemoveBook(bookId) {
   removeBook(bookId)
@@ -131,6 +127,16 @@ function onUpdateBook(bookId) {
   showSuccessMsg(`Book updated successfully ${bookId}`)
 }
 
+function onUpdateRating(diff) {
+  const elRating = document.querySelector('.rating')
+  const newRating = gSelectedBook.rating + diff
+
+  const updatedBook = updateRating(gSelectedBook.id, newRating)
+  elRating.innerText = updatedBook.rating
+
+  renderBooks()
+}
+
 function onAddBook() {
   const title = prompt('Enter the title for the book')
   const price = +prompt('Enter the price for the book')
@@ -142,59 +148,27 @@ function onAddBook() {
   showSuccessMsg(`Book added successfully`)
 }
 
+// Details modal
+
 function onReadBook(ev, bookId) {
   const book = getBookById(bookId)
   gSelectedBook = book
   renderModal(ev, book)
 }
 
-function showSuccessMsg(msg) {
-  if (gTimeoutId) clearTimeout(gTimeoutId)
-  const elUserMsg = document.querySelector('.user-msg')
-  elUserMsg.innerText = msg
-  elUserMsg.hidden = false
-
-  gTimeoutId = setTimeout(() => {
-    elUserMsg.innerText = ''
-    elUserMsg.hidden = true
-  }, 2000)
-}
-
 function renderModal(ev, book) {
   ev.stopPropagation()
 
   const elDialog = document.querySelector('dialog')
-  const elDialogContainer = document.querySelector('dialog .dialog-container')
 
-  var strHtml = `
-    <h1>${book.title}</h1>
-    <p>Price: ${book.price}</p>
-    <p>Rating: 
-      <span onclick="onUpdateRating(-1)">-</span> 
-      <span class="rating">${book.rating}</span> 
-      <span onclick="onUpdateRating(1)">+</span>
-    </p>
-    <img src="${book.imgUrl}" alt="book image">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, qui!</p>
-    <button onclick="onCloseModal()">Close</button>
-  `
+  elDialog.querySelector('h1').innerText = book.title
+  elDialog.querySelector('.price').innerText = `Price: ${book.price}`
+  elDialog.querySelector('.rating').innerText = book.rating
+  elDialog.querySelector('img').src = book.imgUrl
 
-  // var strHtml = `
-  //   <pre>${JSON.stringify(book)}</pre>
-  // `
-
-  elDialogContainer.innerHTML = strHtml
   elDialog.showModal()
 
   window.addEventListener('click', closeOnOutsideClick)
-}
-
-function onUpdateRating(diff) {
-  const elRating = document.querySelector('.rating')
-  const newRating = gSelectedBook.rating + diff
-
-  const updatedBook = updateRating(gSelectedBook.id, newRating)
-  elRating.innerText = updatedBook.rating
 }
 
 function onCloseModal() {
@@ -216,4 +190,106 @@ function closeOnOutsideClick(ev) {
     ev.clientY > rect.bottom
 
   if (isOutsideDialog) onCloseModal()
+}
+
+// Filter, Sort & Pagination
+
+function onSetFilterBy(elInput) {
+  const { filterBy } = gQueryOptions
+  if (elInput.name === 'txt') filterBy.txt = elInput.value
+  if (elInput.name === 'minRating') {
+    filterBy.minRating = +elInput.value
+    document.querySelector('.min-rate').innerText = elInput.value
+  }
+
+  renderBooks()
+}
+
+function onResetFilter() {
+  gQueryOptions = {
+    filterBy: { txt: '', minRating: 0 },
+    sortBy: {},
+    page: { idx: 0, size: 5 },
+  }
+
+  document.querySelector('input[type=text]').value = ''
+  document.querySelector('input[type=range]').value = 3
+  document.querySelector('.min-rate').innerText = 0
+
+  renderBooks()
+}
+
+// Query Params
+
+function readQueryParams() {
+  const queryParams = new URLSearchParams(window.location.search)
+  
+  gQueryOptions.filterBy = {
+      txt: queryParams.get('vendor') || '',
+      minSpeed: +queryParams.get('minSpeed') || 0
+  }
+
+  if(queryParams.get('sortField')) {
+      const prop = queryParams.get('sortField')
+      const dir = queryParams.get('sortDir')
+
+      gQueryOptions.sortBy.sortField = prop
+      gQueryOptions.sortBy.sortDir = dir
+  }
+
+  if(queryParams.get('pageIdx')) {
+      gQueryOptions.page.idx = +queryParams.get('pageIdx')
+      gQueryOptions.page.size = +queryParams.get('pageSize')
+  }
+  renderQueryParams()
+}
+
+function renderQueryParams() {
+  
+  document.querySelector('.vendor').value = gQueryOptions.filterBy.txt
+  document.querySelector('.min-speed').value = gQueryOptions.filterBy.minSpeed
+  
+  const sortField = gQueryOptions.sortBy.sortField
+  const sortDir = +gQueryOptions.sortBy.sortDir
+
+  document.querySelector('.sort-by select').value = sortField || ''
+  document.querySelector('.sort-by input').checked = (sortDir === -1) ? true : false
+}
+
+function setQueryParams() {
+  const queryParams = new URLSearchParams()
+
+  queryParams.set('vendor', gQueryOptions.filterBy.txt)
+  queryParams.set('minSpeed', gQueryOptions.filterBy.minSpeed)
+
+  if(gQueryOptions.sortBy.sortField) {
+      queryParams.set('sortField', gQueryOptions.sortBy.sortField)
+      queryParams.set('sortDir', gQueryOptions.sortBy.sortDir)
+  }
+
+  if(gQueryOptions.page) {
+      queryParams.set('pageIdx', gQueryOptions.page.idx)
+      queryParams.set('pageSize', gQueryOptions.page.size)
+  }
+
+  const newUrl = 
+      window.location.protocol + "//" + 
+      window.location.host + 
+      window.location.pathname + '?' + queryParams.toString()
+
+  window.history.pushState({ path: newUrl }, '', newUrl)
+}
+
+// UI
+
+function showSuccessMsg(msg) {
+  if (gTimeoutId) clearTimeout(gTimeoutId)
+  const elUserMsg = document.querySelector('.user-msg')
+  elUserMsg.innerText = msg
+  elUserMsg.hidden = false
+
+  gTimeoutId = setTimeout(() => {
+    elUserMsg.innerText = ''
+    elUserMsg.hidden = true
+  }, 2000)
 }

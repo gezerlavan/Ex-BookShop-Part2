@@ -15,11 +15,21 @@
       <section class="actions">
         <div class="filter">
           <input
-            oninput="onFilterBy(this)"
+            oninput="onSetFilterBy(this)"
             type="text"
+            name="txt"
             placeholder="Search by book title..."
           />
-          <button onclick="onFilterBy()">Clear</button>
+          <label for="rating">Min rate: <span class="min-rate">0</span></label>
+          <input
+            id="rating"
+            type="range"
+            oninput="onSetFilterBy(this);this.title = this.value"
+            name="minRating"
+            min="1"
+            max="5"
+          />
+          <button onclick="onResetFilter()">Clear</button>
         </div>
         <div>
           <button onclick="onAddBook()">Add book</button>
@@ -53,7 +63,21 @@
     </footer>
 
     <dialog>
-      <div class="dialog-container"></div>
+      <div class="dialog-container">
+        <h1></h1>
+        <p>Price: <span class="price"></span></p>
+        <p>
+          Rating:
+          <span onclick="onUpdateRating(-1)">-</span>
+          <span class="rating"></span>
+          <span onclick="onUpdateRating(1)">+</span>
+        </p>
+        <img src="" alt="book image" />
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, qui!
+        </p>
+        <button onclick="onCloseModal()">Close</button>
+      </div>
     </dialog>
 
     <script src="js/services/util.service.js"></script>

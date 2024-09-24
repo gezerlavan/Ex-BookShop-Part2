@@ -11,11 +11,19 @@ var gUserPref = ''
 
 _createBooks()
 
-function getBooks(filterBy) {
-  if (!filterBy) return gBooks
+function getBooks(options) {
+  // if (!filterBy) return gBooks
+  let books = gBooks
 
-  const regex = new RegExp(filterBy, 'i')
-  return gBooks.filter(book => regex.test(book.title))
+  if (options.filterBy.txt) {
+    const regex = new RegExp(options.filterBy.txt, 'i')
+    books = books.filter(book => regex.test(book.title))
+  }
+  if (options.filterBy.minRating) {
+    books = books.filter(book => book.rating >= options.filterBy.minRating)
+  }
+
+  return books
 }
 
 function getUserPref() {
@@ -84,6 +92,15 @@ function _createBooks() {
   gBooks.push(_createBook('Book 1', 110, 3))
   gBooks.push(_createBook('Book 2', 120, 4))
   gBooks.push(_createBook('Book 3', 130, 5))
+  // gBooks.push(_createBook('Book 4', 140, 4))
+  // gBooks.push(_createBook('Book 5', 150, 4))
+  // gBooks.push(_createBook('Book 6', 160, 3))
+  // gBooks.push(_createBook('Book 7', 170, 3))
+  // gBooks.push(_createBook('Book 8', 180, 5))
+  // gBooks.push(_createBook('Book 9', 190, 5))
+  // gBooks.push(_createBook('Book 10', 200, 5))
+  // gBooks.push(_createBook('Book 11', 210, 4))
+  // gBooks.push(_createBook('Book 12', 220, 4))
 
   _saveBooks()
 }
