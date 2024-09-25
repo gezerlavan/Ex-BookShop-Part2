@@ -12,15 +12,35 @@ var gUserPref = ''
 _createBooks()
 
 function getBooks(options) {
-  // if (!filterBy) return gBooks
-  let books = gBooks
+  const filterBy = options.filterBy
+  const sortBy = options.sortBy
+  const page = options.page
 
-  if (options.filterBy.txt) {
-    const regex = new RegExp(options.filterBy.txt, 'i')
+  var books = _filterBooks(filterBy)
+
+  if (sortBy.sortField === 'title') {
+    books.sort((a, b) => a.title.localeCompare(b.title) * sortBy.sortDir)
+  } else if (sortBy.sortField === 'rating') {
+    books.sort((b1, b2) => (b1.rating - b2.rating) * sortBy.sortDir)
+  } else if (sortBy.sortField === 'price') {
+    books.sort((b1, b2) => (b1.price - b2.price) * sortBy.sortDir)
+  }
+
+  const startIdx = page.idx * page.size
+  books = books.slice(startIdx, startIdx + page.size)
+
+  return books
+}
+
+function _filterBooks(filterBy) {
+  var books = gBooks.slice()
+
+  if (filterBy.txt) {
+    const regex = new RegExp(filterBy.txt, 'i')
     books = books.filter(book => regex.test(book.title))
   }
-  if (options.filterBy.minRating) {
-    books = books.filter(book => book.rating >= options.filterBy.minRating)
+  if (filterBy.minRating) {
+    books = books.filter(book => book.rating >= filterBy.minRating)
   }
 
   return books
@@ -92,15 +112,15 @@ function _createBooks() {
   gBooks.push(_createBook('Book 1', 110, 3))
   gBooks.push(_createBook('Book 2', 120, 4))
   gBooks.push(_createBook('Book 3', 130, 5))
-  // gBooks.push(_createBook('Book 4', 140, 4))
-  // gBooks.push(_createBook('Book 5', 150, 4))
-  // gBooks.push(_createBook('Book 6', 160, 3))
-  // gBooks.push(_createBook('Book 7', 170, 3))
-  // gBooks.push(_createBook('Book 8', 180, 5))
-  // gBooks.push(_createBook('Book 9', 190, 5))
-  // gBooks.push(_createBook('Book 10', 200, 5))
-  // gBooks.push(_createBook('Book 11', 210, 4))
-  // gBooks.push(_createBook('Book 12', 220, 4))
+  gBooks.push(_createBook('Book 4', 140, 4))
+  gBooks.push(_createBook('Book 5', 150, 4))
+  gBooks.push(_createBook('Book 6', 160, 3))
+  gBooks.push(_createBook('Book 7', 170, 3))
+  gBooks.push(_createBook('Book 8', 180, 5))
+  gBooks.push(_createBook('Book 9', 190, 5))
+  gBooks.push(_createBook('Book 10', 200, 5))
+  gBooks.push(_createBook('Book 11', 210, 4))
+  gBooks.push(_createBook('Book 12', 220, 4))
 
   _saveBooks()
 }

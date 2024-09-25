@@ -33,6 +33,40 @@
           />
           <button onclick="onResetFilter()">Clear</button>
         </div>
+        <div class="sort">
+          <label for="sort">Sort by: </label>
+          <select
+            class="sort-by"
+            id="sort"
+            name="sort-field"
+            onchange="onSetSortBy(this)"
+          >
+            <option value="">Select Sorting</option>
+            <option value="title">Title</option>
+            <option value="price">Price</option>
+            <option value="rating">Rating</option>
+          </select>
+          <div>
+            <input
+              type="radio"
+              class="asc"
+              id="asc"
+              name="sort-dir"
+              value="1"
+              onchange="onSetSortBy(this)"
+            />
+            <label for="asc">Asc</label>
+            <input
+              type="radio"
+              class="des"
+              id="des"
+              name="sort-dir"
+              value="-1"
+              onchange="onSetSortBy(this)"
+            />
+            <label for="des">Des</label>
+          </div>
+        </div>
         <div>
           <button onclick="onAddBook()">Add book</button>
           <button class="btn-display" onclick="onToggleDisplay()"></button>

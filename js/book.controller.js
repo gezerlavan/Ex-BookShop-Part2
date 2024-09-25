@@ -197,7 +197,7 @@ function closeOnOutsideClick(ev) {
 // Filter, Sort & Pagination
 
 function onSetFilterBy(elInput) {
-  const { filterBy } = gQueryOptions
+  const filterBy = gQueryOptions.filterBy
   if (elInput.name === 'txt') filterBy.txt = elInput.value
   if (elInput.name === 'minRating') filterBy.minRating = +elInput.value
 
@@ -213,6 +213,18 @@ function onResetFilter() {
 
   document.querySelector('input[type=text]').value = ''
   document.querySelector('input[type=range]').value = 1
+  document.querySelector('.sort-by').value = ''
+  document
+    .querySelectorAll('input[type=radio]')
+    .forEach(i => (i.checked = false))
+
+  renderBooks()
+}
+
+function onSetSortBy(elInput) {
+  const sortBy = gQueryOptions.sortBy
+  if (elInput.name === 'sort-field') sortBy.sortField = elInput.value
+  if (elInput.name === 'sort-dir') sortBy.sortDir = +elInput.value
 
   renderBooks()
 }
@@ -246,12 +258,11 @@ function renderQueryParams() {
   document.querySelector('.title').value = gQueryOptions.filterBy.txt
   document.querySelector('.min-rating').value = gQueryOptions.filterBy.minRating
 
-  // const sortField = gQueryOptions.sortBy.sortField
-  // const sortDir = +gQueryOptions.sortBy.sortDir
-
-  // document.querySelector('.sort-by select').value = sortField || ''
-  // document.querySelector('.sort-by input').checked =
-  //   sortDir === -1 ? true : false
+  const sortField = gQueryOptions.sortBy.sortField
+  const sortDir = +gQueryOptions.sortBy.sortDir
+  document.querySelector('.sort-by').value = sortField || ''
+  document.querySelector('.asc').checked = sortDir > 0
+  document.querySelector('.des').checked = sortDir < 0
 }
 
 function setQueryParams() {
