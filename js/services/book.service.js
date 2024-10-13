@@ -32,6 +32,11 @@ function getBooks(options) {
   return books
 }
 
+function getLastPageIdx(filterBy, pageSize) {
+  const length = _filterBooks(filterBy).length
+  return Math.floor(length / pageSize)
+}
+
 function _filterBooks(filterBy) {
   var books = gBooks.slice()
 

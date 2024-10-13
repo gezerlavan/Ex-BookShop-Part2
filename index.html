@@ -73,19 +73,25 @@
         </div>
       </section>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Rating</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <section class="list-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Price</th>
+              <th>Rating</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <ul class="book-list"></ul>
+      </section>
 
-      <ul class="book-list"></ul>
+      <section class="pager">
+        <button class="pager-btn prev-btn" onclick="onPrevPage(this)">Prev</button>
+        <button class="pager-btn next-btn" onclick="onNextPage(this)">Next</button>
+      </section>
     </main>
 
     <p class="user-msg" hidden></p>

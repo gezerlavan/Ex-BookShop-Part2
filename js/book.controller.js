@@ -16,6 +16,7 @@ function onInit() {
   renderButton()
   readQueryParams()
   renderBooks()
+  renderPagerButtons()
   renderStats()
 }
 
@@ -33,7 +34,7 @@ function renderTable(books) {
       <tr>
         <td>${book.title}</td>
         <td>${book.price}</td>
-        <td>${book.rating}</td>
+        <td class="rate">${'⭐'.repeat(book.rating)}</td>
         <td>
           <button onclick="onReadBook(event, '${book.id}')">Read</button>
           <button onclick="onUpdateBook('${book.id}')">Update</button>
@@ -55,7 +56,7 @@ function renderCards(books) {
       <li>
         <p>Title: ${book.title}</p>
         <p>Price: ${book.price}</p>
-        <p>Rating: ${book.rating}</p>
+        <p>Rating: ${'⭐'.repeat(book.rating)}</p>
         <img src="${book.imgUrl}" alt="">
         <div>
           <button onclick="onReadBook(event, '${book.id}')">Read</button>
@@ -197,11 +198,25 @@ function closeOnOutsideClick(ev) {
 // Filter, Sort & Pagination
 
 function onSetFilterBy(elInput) {
+  gQueryOptions.page.idx = 0
+
   const filterBy = gQueryOptions.filterBy
   if (elInput.name === 'txt') filterBy.txt = elInput.value
   if (elInput.name === 'minRating') filterBy.minRating = +elInput.value
 
   renderBooks()
+  renderPagerButtons()
+}
+
+function onSetSortBy(elInput) {
+  gQueryOptions.page.idx = 0
+
+  const sortBy = gQueryOptions.sortBy
+  if (elInput.name === 'sort-field') sortBy.sortField = elInput.value
+  if (elInput.name === 'sort-dir') sortBy.sortDir = +elInput.value
+
+  renderBooks()
+  renderPagerButtons()
 }
 
 function onResetFilter() {
@@ -211,22 +226,49 @@ function onResetFilter() {
     page: { idx: 0, size: 5 },
   }
 
+  resetInputFields()
+  renderBooks()
+  renderPagerButtons()
+}
+
+function resetInputFields() {
   document.querySelector('input[type=text]').value = ''
   document.querySelector('input[type=range]').value = 1
   document.querySelector('.sort-by').value = ''
   document
     .querySelectorAll('input[type=radio]')
     .forEach(i => (i.checked = false))
-
-  renderBooks()
 }
 
-function onSetSortBy(elInput) {
-  const sortBy = gQueryOptions.sortBy
-  if (elInput.name === 'sort-field') sortBy.sortField = elInput.value
-  if (elInput.name === 'sort-dir') sortBy.sortDir = +elInput.value
+function onNextPage() {
+  changePage(1)
+}
 
+function onPrevPage() {
+  changePage(-1)
+}
+
+function changePage(diff) {
+  const lastPageIdx = getLastPageIdx(
+    gQueryOptions.filterBy,
+    gQueryOptions.page.size
+  )
+  const newPageIdx = gQueryOptions.page.idx + diff
+
+  if (newPageIdx < 0 || newPageIdx > lastPageIdx) return
+
+  gQueryOptions.page.idx = newPageIdx
   renderBooks()
+  renderPagerButtons(lastPageIdx)
+}
+
+function renderPagerButtons(lastPageIdx) {
+  const elPrevBtn = document.querySelector('.prev-btn')
+  const elNextBtn = document.querySelector('.next-btn')
+
+  elNextBtn.disabled = gQueryOptions.page.idx === lastPageIdx
+
+  elPrevBtn.disabled = gQueryOptions.page.idx === 0
 }
 
 // Query Params

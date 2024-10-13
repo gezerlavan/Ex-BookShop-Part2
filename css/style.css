@@ -78,6 +78,10 @@ td:not(:first-child) {
   text-align: center;
 }
 
+td.rate {
+  cursor: default;
+}
+
 table tbody tr:nth-child(odd) {
   background-color: whitesmoke;
 }
@@ -118,6 +122,13 @@ dialog {
 
 .no-books {
   text-align: center;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
 }
 
 .user-msg {
